@@ -13,13 +13,13 @@ var myHeading = document.querySelector('h1');
 function setUserName() {
   var myName = prompt('Please enter your name.');
   localStorage.setItem('name', myName);
-  myHeading.textContent = 'Hello :, ' + myName;
+  myHeading.textContent ='' +  myName +',مرحبا بك في موقعي';
 }
 if(!localStorage.getItem('name')) {
   setUserName();
 } else {
   var storedName = localStorage.getItem('name');
-  myHeading.textContent = 'Mozilla is cool, ' + storedName;
+  myHeading.textContent =  '' + storedName +',مرحبا بك في موقعي';
 }
 myButton.onclick = function() {
   setUserName();
