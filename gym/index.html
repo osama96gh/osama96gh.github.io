@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#111827" />
+  <title>Weekend Gym Plan</title>
+  <style>
+    :root{--bg:#0b1020;--card:#141b2d;--soft:#1e293b;--text:#f8fafc;--muted:#aebbd0;--accent:#4ade80;--accent2:#22c55e;--line:#29344a;--warn:#fbbf24}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#09101d 0%,#0f172a 100%);color:var(--text);min-height:100vh}
+    .wrap{max-width:760px;margin:0 auto;padding:20px 16px 48px}.hero{padding:16px 0 12px}.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:800}.hero h1{font-size:30px;line-height:1.05;margin:8px 0 8px}.hero p{margin:0;color:var(--muted);line-height:1.5}.status{margin:18px 0 14px;background:rgba(74,222,128,.09);border:1px solid rgba(74,222,128,.28);border-radius:16px;padding:14px 15px}.status strong{display:block;font-size:17px}.status span{display:block;color:var(--muted);font-size:14px;margin-top:4px}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 16px;background:#0c1324;padding:6px;border-radius:15px;border:1px solid var(--line)}.tab{border:0;border-radius:11px;padding:12px 10px;background:transparent;color:var(--muted);font-weight:800;font-size:15px;cursor:pointer}.tab.active{background:var(--soft);color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+    .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.metric{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px;text-align:center}.metric b{display:block;font-size:18px}.metric span{font-size:12px;color:var(--muted)}
+    .warmup{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.26);border-radius:15px;padding:13px 14px;margin-bottom:12px}.warmup b{color:#fde68a}.warmup p{margin:4px 0 0;color:var(--muted);font-size:14px;line-height:1.45}
+    .exercise{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin:10px 0;transition:.18s ease}.exercise.done{opacity:.62}.top{display:flex;gap:12px;align-items:flex-start}.check{width:24px;height:24px;accent-color:var(--accent);margin-top:2px}.exbody{flex:1;min-width:0}.titleline{display:flex;align-items:center;justify-content:space-between;gap:10px}.titleline h2{font-size:18px;margin:0}.num{min-width:27px;height:27px;border-radius:9px;background:var(--soft);display:grid;place-items:center;font-weight:900;color:var(--accent)}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}.chip{font-size:12px;background:#0c1324;border:1px solid var(--line);border-radius:999px;padding:5px 8px;color:#d8e1ef}.cue{margin:0;color:var(--muted);line-height:1.45;font-size:14px}.actions{display:flex;gap:8px;margin-top:12px}.video{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:var(--accent2);color:#04110a;font-weight:900;border-radius:10px;padding:10px 12px;font-size:13px}.video:active{transform:translateY(1px)}
+    .tip{margin-top:16px;background:#0c1324;border:1px solid var(--line);border-radius:16px;padding:14px}.tip h3{font-size:14px;margin:0 0 7px}.tip p{font-size:13px;color:var(--muted);line-height:1.5;margin:0}.footer{margin-top:20px;color:#7f8ca4;font-size:12px;line-height:1.5}.reset{width:100%;margin-top:14px;border:1px solid var(--line);background:transparent;color:var(--muted);padding:11px;border-radius:12px;font-weight:700;cursor:pointer}@media (max-width:430px){.hero h1{font-size:27px}.summary{gap:6px}.metric{padding:9px 5px}.titleline h2{font-size:17px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Weekend strength plan · v1</div>
+      <h1>What am I training today?</h1>
+      <p>Two simple sessions built around the equipment in your office gym.</p>
+    </section>
+
+    <section class="status" id="status"><strong>Loading today’s workout…</strong><span></span></section>
+
+    <div class="tabs">
+      <button class="tab" id="satTab" onclick="selectDay('Saturday')">Saturday</button>
+      <button class="tab" id="sunTab" onclick="selectDay('Sunday')">Sunday</button>
+    </div>
+
+    <section class="summary" id="summary"></section>
+    <section id="warmup"></section>
+    <section id="list"></section>
+
+    <section class="tip">
+      <h3>Weight rule</h3>
+      <p>Use a load you can control cleanly and finish each set with about 2–3 good reps still possible. Do not test maximum lifts. If a movement causes sharp pain, stop that exercise.</p>
+    </section>
+    <button class="reset" onclick="resetToday()">Reset completion checks</button>
+    <div class="footer">This first version is intentionally moderate because the two sessions are on consecutive days. Start with 2 sets per strength exercise for the first two weekends; move to 3 sets only if technique stays solid and recovery feels normal.</div>
+  </main>
+
+<script>
+const plans = {
+  Saturday: {
+    focus: 'Full body A', time: '45–55 min', exercises: 5,
+    warmup: 'Treadmill · 5–7 min at an easy pace. Finish with 5 slow bodyweight squats and a few shoulder circles.',
+    items: [
+      {id:'goblet-squat', name:'Goblet Squat', prescription:'2–3 sets × 8–12', rest:'90 sec', equipment:'Dumbbell', cue:'Hold one dumbbell close to your chest. Sit down between your hips, keep your chest tall, then stand smoothly.', video:'https://www.youtube.com/watch?v=nfX7IFK9UNI'},
+      {id:'db-bench', name:'Dumbbell Bench Press', prescription:'2–3 sets × 8–12', rest:'90 sec', equipment:'Bench + dumbbells', cue:'Feet planted, shoulder blades gently back. Lower the dumbbells under control, then press up without bouncing.', video:'https://www.muscleandstrength.com/exercises/dumbbell-bench-press.html'},
+      {id:'lat-pulldown', name:'Wide-Grip Lat Pulldown', prescription:'2–3 sets × 8–12', rest:'90 sec', equipment:'Pulldown machine', cue:'Sit tall and pull the bar toward your upper chest. Keep the movement controlled and avoid leaning far backward.', video:'https://cdn.muscleandstrength.com/exercises/wide-grip-pull-down'},
+      {id:'one-arm-row', name:'One-Arm Dumbbell Row', prescription:'2 sets × 10 each side', rest:'75 sec', equipment:'Bench + dumbbell', cue:'Brace on the bench, keep your back steady, and pull the dumbbell toward your side without twisting your torso.', video:'https://www.muscleandstrength.com/exercises/one-arm-dumbbell-row.html'},
+      {id:'plank', name:'Forearm Plank', prescription:'2 sets × 20–40 sec', rest:'60 sec', equipment:'Floor', cue:'Elbows under shoulders. Keep your body in one straight line and stop the set when your hips start to sag or rise.', video:'https://www.youtube.com/watch?v=xhk1JkbF2lg'}
+    ]
+  },
+  Sunday: {
+    focus: 'Full body B', time: '45–55 min', exercises: 5,
+    warmup: 'Stair climber or treadmill · 5–7 min at an easy pace. Keep it comfortable; this is only a warm-up.',
+    items: [
+      {id:'leg-press', name:'Leg Press', prescription:'2–3 sets × 10–12', rest:'90 sec', equipment:'Leg press', cue:'Keep your whole back supported. Lower the platform only as far as you can while staying controlled, then press smoothly.', video:'https://www.youtube.com/watch?v=W1SD96lrudY'},
+      {id:'db-rdl', name:'Dumbbell Romanian Deadlift', prescription:'2–3 sets × 8–10', rest:'90 sec', equipment:'Dumbbells', cue:'Keep a soft bend in your knees, push your hips backward, keep the dumbbells close to your legs, then stand tall.', video:'https://www.youtube.com/watch?v=QFbZevA7dps'},
+      {id:'incline-press', name:'Incline Dumbbell Press', prescription:'2–3 sets × 8–12', rest:'90 sec', equipment:'Incline bench + dumbbells', cue:'Set the bench to a modest incline. Keep your feet planted, lower under control, then press the dumbbells upward.', video:'https://cdn.muscleandstrength.com/exercises/incline-dumbbell-bench-press.html'},
+      {id:'face-pull', name:'Cable Face Pull', prescription:'2 sets × 12–15', rest:'60 sec', equipment:'Cable + rope', cue:'Set the cable around face height. Pull the rope toward your face with control and keep your torso still.', video:'https://cdn.muscleandstrength.com/exercises/cable-face-pull'},
+      {id:'hip-abduction', name:'Hip Abduction Machine', prescription:'2 sets × 12–15', rest:'60 sec', equipment:'Hip machine', cue:'Sit with your back supported. Open your knees against the pads without bouncing, pause briefly, and return slowly.', video:'https://www.muscleandstrength.com/exercises/hip-abduction-machine.html'}
+    ]
+  }
+};
+
+let selectedDay = 'Saturday';
+function localDayName(){ return new Intl.DateTimeFormat('en-US',{weekday:'long'}).format(new Date()); }
+function dateKey(day){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}-${day}`; }
+function completed(day,id){ return localStorage.getItem(`gym-${dateKey(day)}-${id}`)==='1'; }
+function toggle(day,id,val){ localStorage.setItem(`gym-${dateKey(day)}-${id}`,val?'1':'0'); render(); }
+function selectDay(day){ selectedDay=day; render(); }
+function resetToday(){ plans[selectedDay].items.forEach(i=>localStorage.removeItem(`gym-${dateKey(selectedDay)}-${i.id}`)); render(); }
+
+function weekendMessage(){
+  const today=localDayName();
+  if(today==='Saturday') return ['Saturday workout','Full Body A is your session today.'];
+  if(today==='Sunday') return ['Sunday workout','Full Body B is your session today.'];
+  const d=new Date(); const dow=d.getDay(); const daysUntilSat=(6-dow+7)%7 || 7;
+  const next=new Date(d); next.setDate(d.getDate()+daysUntilSat);
+  const label=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'}).format(next);
+  return ['No strength session today',`Next planned workout: Saturday, ${label}. You can still preview either day below.`];
+}
+
+function render(){
+  const p=plans[selectedDay];
+  document.getElementById('satTab').classList.toggle('active',selectedDay==='Saturday');
+  document.getElementById('sunTab').classList.toggle('active',selectedDay==='Sunday');
+  const msg=weekendMessage(); document.querySelector('#status strong').textContent=msg[0]; document.querySelector('#status span').textContent=msg[1];
+  const done=p.items.filter(i=>completed(selectedDay,i.id)).length;
+  document.getElementById('summary').innerHTML=`<div class="metric"><b>${p.focus.replace('Full body ','')}</b><span>Session</span></div><div class="metric"><b>${p.time.split(' ')[0]}</b><span>Minutes</span></div><div class="metric"><b>${done}/${p.exercises}</b><span>Done</span></div>`;
+  document.getElementById('warmup').innerHTML=`<div class="warmup"><b>Warm-up</b><p>${p.warmup}</p></div>`;
+  document.getElementById('list').innerHTML=p.items.map((i,idx)=>{
+    const isDone=completed(selectedDay,i.id);
+    return `<article class="exercise ${isDone?'done':''}"><div class="top"><input aria-label="Mark ${i.name} complete" class="check" type="checkbox" ${isDone?'checked':''} onchange="toggle('${selectedDay}','${i.id}',this.checked)"><div class="exbody"><div class="titleline"><h2>${i.name}</h2><span class="num">${idx+1}</span></div><div class="chips"><span class="chip">${i.prescription}</span><span class="chip">Rest ${i.rest}</span><span class="chip">${i.equipment}</span></div><p class="cue">${i.cue}</p><div class="actions"><a class="video" href="${i.video}" target="_blank" rel="noopener">Watch technique video ↗</a></div></div></div></article>`;
+  }).join('');
+}
+
+const today=localDayName(); if(today==='Sunday') selectedDay='Sunday'; else selectedDay='Saturday'; render();
+</script>
+</body>
+</html>
